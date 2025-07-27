@@ -7,6 +7,7 @@ const {
 } = require("../controllers/gameController");
 const { getWallet } = require("../controllers/WalletController");
 const crypto = require("crypto");
+const GameRound = require("../models/GameRound");
 
 let roundNumber = 1;
 let pendingBets = [];
@@ -15,7 +16,6 @@ let gameLoopStarted = false; // prevent multiple game loops
 
 exports.initSocket = (io) => {
   io.on("connection", (socket) => {
-
     socket.on("place_bet", async ({ player_id, usd_amount, currency }) => {
       if (isRoundActive) {
         socket.emit(
@@ -77,7 +77,6 @@ const startRound = async (io) => {
   }
 
   pendingBets = [];
-  
 
   io.emit("round_start", {
     id: roundNumber,
@@ -101,6 +100,7 @@ const startRound = async (io) => {
       clearInterval(interval);
       roundNumber++;
       isRoundActive = false;
+
       let countdown = 10;
       io.emit("countdown_tick", { nextRoundIn: countdown }); // Emit instantly
 
@@ -119,4 +119,18 @@ const startRound = async (io) => {
       });
     }
   }, 100);
+  // Only Save round data to DB if bet is placed 
+  if (currentRound.bets.length > 0) {
+    try {
+      await GameRound.create({
+        round_id: roundNumber,
+        crash_point: crash,
+        bets: currentRound.bets,
+        cashouts: currentRound.cashouts, // you need to collect this in your gameController
+      });
+      console.log(`Round ${roundNumber} saved to DB`);
+    } catch (err) {
+      console.error("Failed to save round to DB:", err);
+    }
+  }
 };

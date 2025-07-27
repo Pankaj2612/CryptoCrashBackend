@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const socketio = require("socket.io");
 const { initSocket } = require("./websockets/socket");
 const dotenv = require("dotenv");
+
 dotenv.config();
 
 const app = express();
@@ -13,6 +14,8 @@ const io = socketio(server, {
     origin: [
       "https://crypto-crash-frontend-two.vercel.app/",
       "https://crypto-crash-frontend-two.vercel.app",
+      "http://localhost:5173",
+      "*",
     ],
   },
 });
