@@ -10,13 +10,17 @@ npm install
 
 # 3. Configure environment variables
 # Create a .env file in the root directory and add the following:
-# (You can do this manually or use the echo command below)
 
-echo "PORT=3000
-MONGO_URI=mongodb://localhost:27017/crypto-crash" > .env
+
+MONGO_URI=mongodb://localhost:27017/crypto-crash"
+EXCHANGE_API_KEY = "Use coinmarketCap API Key"
 
 # 4. Start the development server
-npm start
+node server.js
+or
+nodemon server.js
 
+#5.If Cors error then
+Add your Frontend URL to cors in server.js
 # Server will run on http://localhost:3000 by default
 ```
