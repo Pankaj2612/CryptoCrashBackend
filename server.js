@@ -8,10 +8,16 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server, { cors: { origin: "*" } });
+const io = socketio(server, {
+  cors: {
+    origin: [
+      "https://crypto-crash-frontend-two.vercel.app/",
+      "https://crypto-crash-frontend-two.vercel.app",
+    ],
+  },
+});
 
 app.use(express.json());
-
 
 mongoose
   .connect(process.env.MONGO_URL)
